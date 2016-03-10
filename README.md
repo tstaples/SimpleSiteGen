@@ -53,7 +53,7 @@ Here is an example of what the directory structure should look like:
 		-f, --force: Overwrite the contents of the output directory if it exists.
 		-v, --verbose: spits out more info about what's going on.
 		target dir: location of the ssg compliant dir to eval.
-		output dir: location of where to export the evaluated files. This path is overridden by default unless '-w' is used.
+		output dir: location of where to export the evaluated files.
 
 	ssg init [-f | -v] <path>
 		creates a skeleton directory structure for an ssg project.
