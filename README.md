@@ -48,15 +48,16 @@ Here is an example of what the directory structure should look like:
 
 ## Commands
 
-	ssg build [-w | -v] <target dir> <output dir>
+	ssg build [-f | -v] <target dir> <output dir>
 		reads and evals the target dir and builds/exports to output dir.
-		-w, --warn: warns the user if the output dir already exists and prompts to overwrite.
+		-f, --force: Overwrite the contents of the output directory if it exists.
 		-v, --verbose: spits out more info about what's going on.
 		target dir: location of the ssg compliant dir to eval.
 		output dir: location of where to export the evaluated files. This path is overridden by default unless '-w' is used.
 
-	ssg init [-v] <path>
+	ssg init [-f | -v] <path>
 		creates a skeleton directory structure for an ssg project.
+		-f, --force: Overwrite the contents of the output directory if it exists.
 		-v, --verbose: spits out more info about what's going on.
 		path: where to create the skeleton directory.
 
