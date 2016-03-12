@@ -14,6 +14,9 @@ class Config(object):
 	
 
 	def load(self, path):
+		"""
+		Loads the config file into memory.
+		"""
 		try:
 			jdata = json.load(open(path, 'r'))
 		except Exception as e:

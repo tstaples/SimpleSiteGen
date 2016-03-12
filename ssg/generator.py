@@ -6,6 +6,7 @@ class Generator(object):
 
 
 	def run(self, path):
+		"Begins the template parsing/evaluation and returns the fully evaluated file as a list."
 		return self.parse_templates(path)
 
 
@@ -76,6 +77,9 @@ class Generator(object):
 
 
 	def check_comments(self, line, beg, end):
+		"""
+		Checks if the template is commented out.
+		"""
 		is_commented = False
 		com_open_count = line.count("<!--")
 		com_close_count = line.count("-->")

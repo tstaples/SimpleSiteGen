@@ -31,19 +31,23 @@ def create_output_directory(path, force):
 	if utils.path_exists(path):
 		# We'll assume that if it's empty we can write into it
 		if utils.directory_empty(path):
-			return
+			return True
 
 		if not force:
-			raise Exception("Output directory already exists. If you wish to overwrite it use -f.")
+			return False
 		else:
 			log.info("Removing previous contents of output directory...")
 			utils.remove_directory(path)
 
 	log.info("Creating output directory...")
 	utils.create_directory(path)
+	return True
 
 
 def build(params):
+	"""
+	Main entry point for the build command.
+	"""
 	verbose = params.verbose
 	target_directory = utils.normalize_directory(params.target_directory)
 	output_directory = utils.normalize_directory(params.output_directory)
@@ -52,7 +56,9 @@ def build(params):
 	layouts = Layouts(target_directory)
 	generator = Generator(layouts)
 
-	create_output_directory(output_directory, params.force)
+	if not create_output_directory(output_directory, params.force):
+		print "Output directory already exists. If you wish to overwrite it use -f."
+		return False
 
 	public_directory = utils.normalize_directory(target_directory + "public")
 	for path in utils.walk_folder(public_directory):
@@ -71,6 +77,7 @@ def build(params):
 		except Exception as e:
 			log.error("Error copying file")
 			continue
+	return True
 
 
 
@@ -104,6 +111,7 @@ if  __name__ == "__main__":
 	# set log level based on verbose flag
 	log.log_level = log.level_info if args.verbose else log.level_error
 
-	print "root: " + root_path
-
-	args.run(args)
+	if args.run(args):
+		print "Operation completed successfully."
+	else:
+		print "Operation finished with errors."
