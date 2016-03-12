@@ -1,6 +1,7 @@
 import os
 import fnmatch
 import shutil
+import inspect
 
 
 def print_parse_exception(exc, filename=None):
@@ -50,8 +51,9 @@ def read_file(path, mode='r'):
         f = open_file(path, mode)
         data = f.read()
         f.close()
-    except Exception as e:
-        print "failed to read file: " + path + ": " + str(e)
+    except IOError as e:
+        #print "failed to read file: " + path + ": " + str(e)
+        raise e
     return data
 
 
@@ -153,7 +155,11 @@ def get_filename_no_extension(path):
     parts = filename.replace("\\", "/").split("/")
     return parts[len(parts) - 1]
 
+def normalize_path(path, delim="/"):
+    return path.replace("\\", delim)
 
+def get_current_dir():
+    return os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 # ===================================================================================
 
 def matches_pattern(pattern, filepath):
