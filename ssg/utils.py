@@ -129,6 +129,9 @@ def remove_directory(root):
         return False
     return True
 
+def directory_empty(path):
+    return (len(os.listdir(path)) == 0)
+
 
 def path_exists(path):
     return os.path.exists(path)
@@ -157,6 +160,11 @@ def get_filename_no_extension(path):
 
 def normalize_path(path, delim="/"):
     return path.replace("\\", delim)
+
+def normalize_directory(dir, delim="/"):
+    d = dir.replace("\\", delim)
+    d = d + delim if d[-1] != delim else d
+    return d
 
 def get_current_dir():
     return os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
