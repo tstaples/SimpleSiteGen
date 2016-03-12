@@ -5,6 +5,7 @@ import argparse
 
 from config import Config
 from layouts import Layouts
+from generator import Generator
 import utils
 import log
 
@@ -23,14 +24,55 @@ import log
 '''
 
 
+def create_output_directory(path, force):
+	"""
+	handles removal/creation of output directory.
+	"""
+	if utils.path_exists(path):
+		# We'll assume that if it's empty we can write into it
+		if utils.directory_empty(path):
+			return
+
+		if not force:
+			raise Exception("Output directory already exists. If you wish to overwrite it use -f.")
+		else:
+			log.info("Removing previous contents of output directory...")
+			utils.remove_directory(path)
+
+	log.info("Creating output directory...")
+	utils.create_directory(path)
+
+
 def build(params):
-	force = params.force
 	verbose = params.verbose
-	target_directory = utils.normalize_path(params.target_directory)
-	output_directory = utils.normalize_path(params.output_directory)
+	target_directory = utils.normalize_directory(params.target_directory)
+	output_directory = utils.normalize_directory(params.output_directory)
 	config_directory = utils.normalize_path(params.config)
 	config = Config(config_directory)
 	layouts = Layouts(target_directory)
+	generator = Generator(layouts)
+
+	create_output_directory(output_directory, params.force)
+
+	public_directory = utils.normalize_directory(target_directory + "public")
+	for path in utils.walk_folder(public_directory):
+		full_path = utils.normalize_path(public_directory + path)
+
+		# check if we should parse this file or just copy it
+		extension = utils.get_extension(full_path)
+		if extension and extension in config.filetypes:
+			data = generator.run(full_path)
+			utils.write_list_to_file(output_directory + path, data)
+			continue
+
+		try:
+			log.info("copying: " + full_path + " to " + output_directory + path)
+			utils.copy_file(full_path, output_directory + path)
+		except Exception as e:
+			log.error("Error copying file")
+			continue
+
+
 
 
 def init(params):
